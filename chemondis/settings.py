@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'allauth',
     'allauth.account',
     'rest_auth.registration',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -125,7 +127,25 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+# Sites
 
 SITE_ID = 1
+
+# Django Rest Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True   
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
