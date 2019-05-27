@@ -11,7 +11,7 @@ class LoginTest(TestCase):
 
     def setUp(self):
         factory.random.reseed_random('chemondis')
-        self.user = UserFactory.create()
+        self.user = UserFactory.create(username='')
         self.client = APIClient()
 
     def test_success(self):

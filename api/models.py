@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .managers import SlotManager
 import uuid
 
 
@@ -13,6 +14,10 @@ class Interview(models.Model):
 
 
 class CandidateSlot(models.Model):
+    class Meta:
+        unique_together = [['date', 'interview']]
+
+    objects = SlotManager()
     date = models.DateTimeField(db_index=True)
     interview = models.ForeignKey(Interview, on_delete=models.CASCADE)
 
@@ -24,6 +29,9 @@ class CandidateSlot(models.Model):
 
 
 class InterviewerSlot(models.Model):
+    class Meta:
+        unique_together = [['date', 'interview', 'user']]
+
     date = models.DateTimeField(db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     interview = models.ForeignKey(Interview, on_delete=models.CASCADE)
