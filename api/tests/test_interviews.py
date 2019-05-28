@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
-from .factories import InterviewFactory
+from rest_framework.authtoken.models import Token
+from .factories import InterviewFactory, UserFactory
 from ..models import Interview
 import factory.random
 import json
@@ -10,14 +11,16 @@ class InterviewTestCase(TestCase):
 
     def setUp(self):
         factory.random.reseed_random('chemondis')
-        self.client = APIClient()
+        user = UserFactory.create()
+        token = Token.objects.create(user=user)
+        self.client = APIClient(HTTP_AUTHORIZATION='Token ' + token.key)
 
     def test_retrieve(self):
         obj = InterviewFactory.create()
         response = self.client.get('/api/v1/interviews/{}/'.format(obj.id))
         data = json.loads(response.content)
-        self.assertEqual(data['candidate_name'], 'Kari Patterson')
-        self.assertEqual(data['candidate_email'], 'paulpadilla@williams.org')
+        self.assertEqual(data['candidate_name'], 'Tracy Cook')
+        self.assertEqual(data['candidate_email'], 'watsonross@yahoo.com')
 
     def test_list(self):
         InterviewFactory.create_batch(size=5)
@@ -25,9 +28,9 @@ class InterviewTestCase(TestCase):
         data = json.loads(response.content)
 
         self.assertEqual(len(data), 5)
-        self.assertEqual(data[0]['candidate_name'], 'Kari Patterson')
+        self.assertEqual(data[0]['candidate_name'], 'Tracy Cook')
         self.assertEqual(
-            data[0]['candidate_email'], 'paulpadilla@williams.org'
+            data[0]['candidate_email'], 'watsonross@yahoo.com'
         )
 
     def test_create(self):
@@ -65,6 +68,17 @@ class InterviewTestCase(TestCase):
         self.assertEqual(
             data.get('candidate_email'),
             ['Enter a valid email address.']
+        )
+
+    def test_create__auth(self):
+        response = APIClient().post('/api/v1/interviews/', {
+            'candidate_name': 'jane doe',
+            'candidate_email': 'jane@example.com'
+        })
+        content = json.loads(response.content)
+        self.assertEqual(
+            content.get('detail'),
+            'Authentication credentials were not provided.'
         )
 
     def test_update(self):

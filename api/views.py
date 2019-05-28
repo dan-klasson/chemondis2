@@ -2,6 +2,7 @@ from rest_framework import viewsets, mixins
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError as APIValidationError
+from rest_framework import permissions
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from .serializers import (
@@ -30,6 +31,7 @@ class InterviewViewSet(viewsets.ModelViewSet):
     queryset = Interview.objects.all()
     serializer_class = InterviewSerializer
     http_method_names = ['get', 'post', 'head', 'put', 'delete']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SlotView(mixins.CreateModelMixin,
