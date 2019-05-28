@@ -19,9 +19,9 @@ slots_router.register(
 )
 
 urlpatterns = [
-    path('login', LoginView.as_view(), name="user-login"),
-    path('logout', LogoutView.as_view(), name='user-logout'),
-    path('register', RegisterView.as_view(), name='rest_register'),
+    path('login/', LoginView.as_view(), name="user-login"),
+    path('logout/', LogoutView.as_view(), name='user-logout'),
+    path('register/', RegisterView.as_view(), name='rest_register'),
     path('', include(router.urls)),
     path('', include(slots_router.urls)),
 ]

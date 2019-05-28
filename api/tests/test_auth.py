@@ -15,7 +15,7 @@ class LoginTest(TestCase):
         self.client = APIClient()
 
     def test_success(self):
-        response = self.client.post('/api/v1/login', {
+        response = self.client.post('/api/v1/login/', {
             'email': 'ronniepeterson@gmail.com',
             'password': 'password'
         })
@@ -24,7 +24,7 @@ class LoginTest(TestCase):
         self.assertTrue('key' in content)
 
     def test_failure(self):
-        response = self.client.post('/api/v1/login', {
+        response = self.client.post('/api/v1/login/', {
             'email': 'foo@example.com',
             'password': 'wrong-password'
         })
@@ -46,7 +46,7 @@ class LogoutTest(TestCase):
         self.client = APIClient(HTTP_AUTHORIZATION='Token ' + token.key)
 
     def test_success(self):
-        response = self.client.post('/api/v1/logout')
+        response = self.client.post('/api/v1/logout/')
         content = json.loads(response.content)
 
         self.assertEqual(response.status_code, 200)
@@ -64,7 +64,7 @@ class RegisterTest(TestCase):
         self.client = APIClient()
 
     def test_success(self):
-        response = self.client.post('/api/v1/register', {
+        response = self.client.post('/api/v1/register/', {
             'email': 'dan@example.com',
             'password1': 'hax0r ftw',
             'password2': 'hax0r ftw',
@@ -75,12 +75,12 @@ class RegisterTest(TestCase):
         self.assertEqual(User.objects.count(), 1)
 
     def test_multiple(self):
-        self.client.post('/api/v1/register', {
+        self.client.post('/api/v1/register/', {
             'email': 'dan1@example.com',
             'password1': 'hax0r ftw',
             'password2': 'hax0r ftw',
         })
-        self.client.post('/api/v1/register', {
+        self.client.post('/api/v1/register/', {
             'email': 'dan2@example.com',
             'password1': 'hax0r ftw',
             'password2': 'hax0r ftw',
