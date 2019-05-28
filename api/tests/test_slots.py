@@ -62,8 +62,7 @@ class CreateInterviewerSlotTest(TestCase):
     def test_interviewer_success(self):
         response = self.client.post(
             '/api/v1/interviews/{}/slots/'.format(self.interview.id), {
-                'slots': [{'date': '2000-01-01 10:00'}],
-                'user': self.user.id
+                'slots': [{'date': '2000-01-01 10:00'}]
             }
         )
         self.assertEqual(response.status_code, 201)
@@ -77,8 +76,7 @@ class CreateInterviewerSlotTest(TestCase):
         )
         response = self.client.post(
             '/api/v1/interviews/{}/slots/'.format(self.interview.id), {
-                'slots': [{'date': '2000-01-01 10:00'}],
-                'user': self.user.id
+                'slots': [{'date': '2000-01-01 10:00'}]
             }
         )
         content = json.loads(response.content)
@@ -88,8 +86,7 @@ class CreateInterviewerSlotTest(TestCase):
     def test_invalid_date(self):
         response = self.client.post(
             '/api/v1/interviews/{}/slots/'.format(self.interview.id), {
-                'slots': [{'date': '2000-01-01 10:05'}],
-                'user': self.user.id
+                'slots': [{'date': '2000-01-01 10:05'}]
             }
         )
         content = json.loads(response.content)
@@ -97,16 +94,6 @@ class CreateInterviewerSlotTest(TestCase):
         self.assertEqual(
             content.get('slots')[0].get('date'),
             ['Datetime must be on the hour.'])
-
-    def test_missing_user(self):
-        response = self.client.post(
-            '/api/v1/interviews/{}/slots/'.format(self.interview.id), {
-                'slots': [{'date': '2000-01-01 10:00'}],
-            }
-        )
-        content = json.loads(response.content)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(content.get('user'), ['This field is required.'])
 
 
 class ListSlotTest(TestCase):

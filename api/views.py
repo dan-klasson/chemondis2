@@ -5,9 +5,7 @@ from rest_framework.exceptions import ValidationError as APIValidationError
 from rest_framework import permissions
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-from .serializers import (
-    CandidateSlotSerializer, InterviewerSlotSerializer, InterviewSerializer
-)
+from .serializers import SlotSerializer, InterviewSerializer
 from .models import CandidateSlot, InterviewerSlot, Interview
 
 
@@ -44,7 +42,7 @@ class SlotView(mixins.CreateModelMixin,
     list:
     List overlapping slots for an interview.
     """
-    serializer_class = CandidateSlotSerializer
+    serializer_class = SlotSerializer
 
     def save_slots(self, cls, serializer, interview, user=None):
         objects = []
@@ -68,15 +66,14 @@ class SlotView(mixins.CreateModelMixin,
         except ValidationError as e:
             raise APIValidationError({'interview': e.messages})
 
+        serializer = SlotSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         if request.user.is_authenticated:
-            serializer = InterviewerSlotSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
             self.save_slots(
                 InterviewerSlot, serializer, interview, request.user
             )
         else:
-            serializer = CandidateSlotSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
             self.save_slots(CandidateSlot, serializer, interview)
 
         return Response(

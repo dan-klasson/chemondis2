@@ -18,10 +18,5 @@ class SlotSerializer(serializers.Serializer):
     date = serializers.DateTimeField()
 
 
-class CandidateSlotSerializer(serializers.Serializer):
+class SlotSerializer(serializers.Serializer):
     slots = SlotSerializer(many=True)
-
-
-class InterviewerSlotSerializer(serializers.Serializer):
-    slots = SlotSerializer(many=True)
-    user = serializers.IntegerField()
